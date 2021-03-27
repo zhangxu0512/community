@@ -1,0 +1,23 @@
+package com.yinhe.community.model;
+
+import lombok.Data;
+
+/**
+ * @author 张旭
+ * @create 2021-02-25 14:25
+ */
+@Data
+public class Question {
+    private int id;
+    private String title;
+    private String description;
+    private String tag;
+    private Long gmtCreate;
+    private Long gmtModified;
+    private Integer creator;
+    private Integer viewCount;
+    private Integer commentCount;
+    private Integer likeCount;
+
+
+}
