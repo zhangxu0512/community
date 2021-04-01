@@ -5,6 +5,7 @@ import com.yinhe.community.dto.GithubUser;
 import com.yinhe.community.mapper.UserMapper;
 import com.yinhe.community.model.User;
 import com.yinhe.community.provider.GithubProvider;
+import com.yinhe.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -36,7 +37,7 @@ public class AuthorizeController {
     private String redirect_uri;
 
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
 
     @GetMapping("callback")
     public String callback(@RequestParam(name = "code") String code,
@@ -54,15 +55,13 @@ public class AuthorizeController {
         GithubUser githubuser = githubProvider.getUser(accesstoken);
         if (githubuser != null) {
             User user = new User();
-            user.setAccount_id(String.valueOf(githubuser.getId()));
+            user.setAccountId(String.valueOf(githubuser.getId()));
             user.setName(githubuser.getName());
             String token = UUID.randomUUID().toString();
-            user.setGmt_create(System.currentTimeMillis());
-            user.setGmt_modified(user.getGmt_create());
+
             user.setToken(token);
             user.setAvatarUrl(githubuser.getAvatar_url());
-            userMapper.insert(user);
-
+            userService.createOrUpdate(user);
             //登陆成功 写cookie和session
             response.addCookie(new Cookie("token", token));
 //            request.getSession().setAttribute("user",githubuser);
