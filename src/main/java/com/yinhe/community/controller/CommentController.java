@@ -1,7 +1,9 @@
 package com.yinhe.community.controller;
 
 import com.yinhe.community.dto.CommentCreateDTO;
+import com.yinhe.community.dto.CommentDTO;
 import com.yinhe.community.dto.ResultDTO;
+import com.yinhe.community.enums.CommentTypeEnum;
 import com.yinhe.community.exception.CustomizeErrorCode;
 import com.yinhe.community.model.Comment;
 import com.yinhe.community.model.User;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author 张旭
@@ -44,5 +47,12 @@ public class CommentController {
         comment.setLikeCount(0L);
         commentService.insert(comment);
         return ResultDTO.okOf();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/comment/{id}",method = RequestMethod.GET)
+    public ResultDTO<List> comments(@PathVariable(name = "id") Long id){
+        List<CommentDTO> commentDTOS = commentService.listByTargerId(id, CommentTypeEnum.COMMENT);
+        return ResultDTO.okOf(commentDTOS);
     }
 }
